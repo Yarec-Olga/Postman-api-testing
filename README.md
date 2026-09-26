@@ -52,3 +52,6 @@ newman run "My Collection.postman_collection.json" -e "Development.postman_envir
 ## Технологии
 
 Postman, Newman, JavaScript
+
+
+## CI/CD В проект добавлена автоматическая проверка через GitHub Actions (`.github/workflows/tests.yml`) — тесты запускаются автоматически при каждом push с помощью Newman. Один из тестов (`data - 404 error`) намеренно оставлен неуспешным — он демонстрирует, как выглядит `AssertionError` при несовпадении ожидаемого и фактического статус-кода. Это сделано специально для отработки навыка чтения и анализа отчётов о проваленных тестах. 
