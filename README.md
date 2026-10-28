@@ -1,57 +1,59 @@
-# Postman-api-testing
+# Postman API Testing
 
-Учебный проект по тестированию API с использованием Postman и Newman
+API testing project built with Postman and Newman.
 
-## Что здесь есть
+## What's Inside
+- A request collection split into GET and POST requests
+- Automated tests (status code and response data checks)
+- A configured environment with a `baseUrl` variable
+- Test scenarios for successful and failed server responses (200, 404)
+- A Mock Server with three manually created endpoints
 
-- Коллекция запросов с разделением на GET и POST запросы
-- Автоматические тесты (проверка статус-кода и данных в ответе)
-- Настроенное окружение (Environment) с переменной "baseUrl"
-- Тестовые сценарии для успешных и неуспешных ответов сервера (200, 404)
-- Mock Server — созданный вручную фейковый сервер с тремя endpoint'ами
+## Files
+- `My Collection.postman_collection.json` – the request collection
+- `Development.postman_environment.json` – the environment with the variable
 
-## Файлы
+## How to Run
 
-- "My Collection.postman_collection.json" - коллекция запросов
-- "Development.postman_environment.json" - окружение с переменной
+### In Postman
+1. Import both files via **File → Import**
+2. Select the **Development** environment in the top-right corner
+3. Open any request and click **Send**
 
-## Через Postman
+### With Newman (Terminal)
+Requires Node.js and Newman (`npm install -g newman`)
 
-- Импортировать оба файла через File → Import
-- Выбрать окружение "Development" в правом верхнем углу
-- Открыть любой запрос и нажать Send
-
-## Через Newman (Терминал)
-
-Требуется установленный Node.js и Newman (`npm install -g newman`)
-
-newman run "My Collection.postman_collection.json" -e "Development.postman_environment.json"
+`newman run "My Collection.postman_collection.json" -e "Development.postman_environment.json"`
 
 ## Mock Server
+Explored the Mock Server feature in Postman: creating a fake API server to test endpoints before the real backend is ready.
 
-Изучен и опробован функционал Mock Server в Postman — создание фейкового API-сервера для тестирования эндпоинтов до готовности реального backend.
+Endpoints:
+- `GET /health` – server health check
+- `GET /hello` – a test greeting response
+- `GET /products` – a list of products in JSON format
 
-**Реализованные endpoint'ы:**
+Example `/products` response:
 
-* `GET /health` - проверка работоспособности сервера
-* `GET /hello` - тестовый ответ с приветственным сообщением
-* `GET /products` - список товаров в формате JSON
+    [
+      { "name": "Coat", "price": 200 },
+      { "name": "Gloves", "price": 70 },
+      { "name": "Shawl", "price": 70 }
+    ]
 
-**Пример ответа `/products`:**
+All endpoints were tested manually and returned 200 OK.
 
-```json
-[
-  { "name": "Coat", "price": 200 },
-  { "name": "Gloves", "price": 70 },
-  { "name": "Shawl", "price": 70 }
-]
-```
+## CI/CD
+Automated checks run with GitHub Actions (`.github/workflows/tests.yml`): Newman runs the tests on every push.
 
-Все запросы протестированы вручную, получен успешный ответ 200 OK для каждого endpoint'а.
+One test (`data - 404 error`) intentionally fails. It shows what an `AssertionError` looks like when the expected and actual status codes don't match, and is used to practice reading and analyzing failed test reports.
 
-## Технологии
+## Monitoring
+Set up a Postman Monitor to run the collection daily in the Postman cloud and send an email alert on failures. The monitor is currently paused to save free-plan usage.
 
-Postman, Newman, JavaScript
+While setting it up, I found that requests using `{{baseUrl}}` failed only in the monitor. The cause: the variable had only a local value, while cloud runs use shared values. After sharing the value, I re-ran the monitor and confirmed that the requests passed.
 
+![Monitor result](monitor-result.png)
 
-## CI/CD В проект добавлена автоматическая проверка через GitHub Actions (`.github/workflows/tests.yml`) — тесты запускаются автоматически при каждом push с помощью Newman. Один из тестов (`data - 404 error`) намеренно оставлен неуспешным — он демонстрирует, как выглядит `AssertionError` при несовпадении ожидаемого и фактического статус-кода. Это сделано специально для отработки навыка чтения и анализа отчётов о проваленных тестах. 
+## Tech Stack
+Postman, Newman, JavaScript, GitHub Actions
